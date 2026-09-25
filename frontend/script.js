@@ -67,6 +67,8 @@ document
             )
         };
 
+        console.log("Payload Sent:", payload);
+
         try {
 
             const response = await fetch(
@@ -80,12 +82,32 @@ document
                 }
             );
 
+            if (!response.ok) {
+
+                const errorText = await response.text();
+
+                document.getElementById("result").innerHTML =
+                    `
+                    API Error<br>
+                    Status: ${response.status}
+                    `;
+
+                console.error(errorText);
+
+                return;
+            }
+
             const data = await response.json();
+
+            const predictionText =
+                data.prediction === 1
+                    ? "Customer Likely To Churn"
+                    : "Customer Likely To Stay";
 
             document.getElementById("result").innerHTML =
                 `
-                Prediction: ${data.prediction}
-                <br>
+                <h3>${predictionText}</h3>
+
                 Probability:
                 ${(data.probability * 100).toFixed(2)}%
                 `;
@@ -97,4 +119,5 @@ document
 
             console.error(error);
         }
+
     });
