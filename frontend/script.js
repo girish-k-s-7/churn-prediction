@@ -1,62 +1,100 @@
-const payload = {
+document
+    .getElementById("predictionForm")
+    .addEventListener("submit", async function (e) {
 
-    gender: document.getElementById("gender").value,
+        e.preventDefault();
 
-    SeniorCitizen: Number(
-        document.getElementById("SeniorCitizen").value
-    ),
+        const payload = {
 
-    Partner:
-        document.getElementById("Partner").value,
+            gender: document.getElementById("gender").value,
 
-    Dependents:
-        document.getElementById("Dependents").value,
+            SeniorCitizen: Number(
+                document.getElementById("SeniorCitizen").value
+            ),
 
-    tenure: Number(
-        document.getElementById("tenure").value
-    ),
+            Partner:
+                document.getElementById("Partner").value,
 
-    PhoneService:
-        document.getElementById("PhoneService").value,
+            Dependents:
+                document.getElementById("Dependents").value,
 
-    MultipleLines:
-        document.getElementById("MultipleLines").value,
+            tenure: Number(
+                document.getElementById("tenure").value
+            ),
 
-    InternetService:
-        document.getElementById("InternetService").value,
+            PhoneService:
+                document.getElementById("PhoneService").value,
 
-    OnlineSecurity:
-        document.getElementById("OnlineSecurity").value,
+            MultipleLines:
+                document.getElementById("MultipleLines").value,
 
-    OnlineBackup:
-        document.getElementById("OnlineBackup").value,
+            InternetService:
+                document.getElementById("InternetService").value,
 
-    DeviceProtection:
-        document.getElementById("DeviceProtection").value,
+            OnlineSecurity:
+                document.getElementById("OnlineSecurity").value,
 
-    TechSupport:
-        document.getElementById("TechSupport").value,
+            OnlineBackup:
+                document.getElementById("OnlineBackup").value,
 
-    StreamingTV:
-        document.getElementById("StreamingTV").value,
+            DeviceProtection:
+                document.getElementById("DeviceProtection").value,
 
-    StreamingMovies:
-        document.getElementById("StreamingMovies").value,
+            TechSupport:
+                document.getElementById("TechSupport").value,
 
-    Contract:
-        document.getElementById("Contract").value,
+            StreamingTV:
+                document.getElementById("StreamingTV").value,
 
-    PaperlessBilling:
-        document.getElementById("PaperlessBilling").value,
+            StreamingMovies:
+                document.getElementById("StreamingMovies").value,
 
-    PaymentMethod:
-        document.getElementById("PaymentMethod").value,
+            Contract:
+                document.getElementById("Contract").value,
 
-    MonthlyCharges: Number(
-        document.getElementById("MonthlyCharges").value
-    ),
+            PaperlessBilling:
+                document.getElementById("PaperlessBilling").value,
 
-    TotalCharges: Number(
-        document.getElementById("TotalCharges").value
-    )
-};
+            PaymentMethod:
+                document.getElementById("PaymentMethod").value,
+
+            MonthlyCharges: Number(
+                document.getElementById("MonthlyCharges").value
+            ),
+
+            TotalCharges: Number(
+                document.getElementById("TotalCharges").value
+            )
+        };
+
+        try {
+
+            const response = await fetch(
+                "https://churn-prediction-rb7i.onrender.com/predict",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+            const data = await response.json();
+
+            document.getElementById("result").innerHTML =
+                `
+                Prediction: ${data.prediction}
+                <br>
+                Probability:
+                ${(data.probability * 100).toFixed(2)}%
+                `;
+
+        } catch (error) {
+
+            document.getElementById("result").innerHTML =
+                "Error connecting to API";
+
+            console.error(error);
+        }
+    });
